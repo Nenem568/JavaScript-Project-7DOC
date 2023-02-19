@@ -1,0 +1,27 @@
+@import url(./header.css);
+@import url(./checkbox.css);
+@import url(./movies.css);
+
+*, 
+*:after,
+*:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+}
+:root{
+    --text-color:white;
+    --first-color:#1D1C3B;
+    --second-color:#45454d;
+    --movie-description-color:#ACACAC;
+}
+html{
+    scroll-behavior:smooth;
+}
+body{
+    font-size: 100%;
+    list-style-type: none;
+    background: var(--first-color);
+}
