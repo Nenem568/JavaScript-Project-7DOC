@@ -57,7 +57,21 @@
     vertical-align:text-top;
 }
 .movie-description{
-    padding:3rem;
-    width:120%;
+    height:max-content;
+    height:80%;
+    padding-right:2em;
+    width:100%;
     color:var(--movie-description-color);
+    overflow:auto;
+}
+.movie-description::-webkit-scrollbar{
+    width:10px;
+    border-radius: 8px;
+    height:100%;
+    background-color:var(--second-color);
+}
+.movie-description::-webkit-scrollbar-thumb{
+    background:var(--first-color);
+    border-radius:8px;
+    border:1px solid var(--second-color);
 }

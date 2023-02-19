@@ -1,14 +1,16 @@
+import API_KEY from "./api.js";
+
 const body = document.body,
     html = document.documentElement,
     moviesList = document.querySelector(".movies-list")// Selecting the parente list and section which will show every movie
 
-function renderMovie(movie){
+function renderMovie(movie, title){
     // Creating the const of each movie property
-    const moviePoster = movie.image,
-        movieName = document.createTextNode(movie.name),
-        movieRating = document.createTextNode(movie.rating),
+    const movieName = document.createTextNode(title),
+        moviePoster = "https://image.tmdb.org/t/p/w200" + movie.poster_path,
+        movieRating = document.createTextNode(movie.vote_average.toPrecision(2)),
         movieFavorite = document.createTextNode("Favoritar"),
-        movieDescription = document.createTextNode(movie.description);
+        movieDescription = document.createTextNode(movie.overview);
 
     // Creating the element who is parent to it all
     const movieElement = document.createElement("div");
@@ -26,7 +28,7 @@ function renderMovie(movie){
     movieElement.appendChild(posterContainer);
     const posterImg = new Image;
     posterImg.src = moviePoster;
-    posterImg.alt = movie.name + " - Poster";
+    posterImg.alt = movieName + " - Poster";
     posterContainer.appendChild(posterImg);
 
     // Creating and giving the movie it's respective title
@@ -76,115 +78,27 @@ function renderMovie(movie){
     movieElement.appendChild(movieDescriptionP);
 }
 
-// List of dicts with all movies
-let movies = [
-    {name:"Batman (2022)",
-    rating:"7.8",
-    isFavorited:false,
-    description:"Sinopse desconhecida",
-    image:"https://i0.wp.com/br.nacaodamusica.com/wp-content/uploads/2022/03/the_batman-800x540.jpg"},
+window.onload = async function gettingMovies() {
+    try {
+        const fetchResponse = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`),
+            data = await fetchResponse.json();
 
-    {name:"Interstellar (2014)",
-    rating:"8.6",
-    isFavorited:true,
-    description:"Uma equipe de exploradores viaja através de um buraco de minhoca no espaço, na tentativa de garantir a sobrevivência da humanidade.",
-    image:"https://images.bauerhosting.com/legacy/empire-tmdb/films/157336/images/xu9zaAevzQ5nnrsXN6JcahLnG4i.jpg?format=jpg&quality=80&width=960&height=540&ratio=16-9&resize=aspectfill"
-    },
-
-    {name:"Avatar (2009)",
-    rating:"7.9",
-    isFavorited:false,
-    description:"Um militar paraplégico despachado para a lua Pandora em uma missão única fica dividido entre seguir suas ordens e proteger o mundo que ele sente ser sua casa.",
-    image:"https://s2.glbimg.com/T4CRp2Bwz6QyXh-3IfI-XzHjgvk=/e.glbimg.com/og/ed/f/original/2022/08/23/fa27tr6usaaajx1.jpg"
-    },
-
-    {name:"Avengers Endgame (2019)",
-    rating:"8.4",
-    isFavorited:true,
-    description:"Após os eventos devastadores de Vingadores: Guerra Infinita , o universo está em ruínas, e com a ajuda de aliados os Vingadores se reúnem para desfazer as ações de Thanos e restaurar a ordem.",
-    image:"https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg"
-    },
-]
-
-// Rendering out each of the movies with in the movies array
-movies.forEach(movie => {
-    renderMovie(movie);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 2ND Way
-
-
-
-
-Decided to test something and see if it would be easier. This is the second way to do this, in a very much simple way, faster but maybe cheating for some people, which you would need to create the HTML file first just like in the first way, but in this one you use the HTML inside `` so you can pass everything that should be written in the innerHTML and also changing what you would like to change:
-
-const moviesList = document.querySelector(".movies-list")
-
-function renderMovie(movie){
-    moviesList.innerHTML += 
-    `<div class="movie-container">
-            <div class="poster-container">
-                <img src="${movie.image}" alt="${movie.name} - Poster">
-            </div>
-            <div class="movie-info">
-                <p class="movie-title">${movie.name}</p>
-                <div class="rating-favorite">
-                    <div class="rating">
-                        <img src="./icons/Star.svg" alt="Star icon" class="star-icon">
-                        <span>${movie.rating}</span>
-                    </div>
-                    <div class="favorite">
-                        <a href="#favorite"><img src="./icons/Heart.svg" alt="Heart icon" class="heart-icon">
-                        <span>Favoritar</span></a>
-                    </div>
-                </div>
-            </div>
-        <span class="movie-description">${movie.description}</span>
-    </div>`
+        data.results.forEach(movie => {
+            const name = movie.name,
+                originalName = movie.original_name,
+                title = movie.title,
+                movieFinalTitle = (name, originalName, title) => {
+                if (name){
+                    return name
+                }else if(originalName){
+                    return originalName
+                }else if(title){
+                    return title
+                }
+            }
+            renderMovie(movie, movieFinalTitle(name, originalName, title))
+        });
+    } catch (error) {
+        console.log({error});
+    }
 }
-
-let movies = [
-    {name:"Batman (2022)",
-    rating:"7.8",
-    isFavorited:false,
-    description:"Sinopse desconhecida",
-    image:"https://i0.wp.com/br.nacaodamusica.com/wp-content/uploads/2022/03/the_batman-800x540.jpg"},
-
-    {name:"Interstellar (2014)",
-    rating:"8.6",
-    isFavorited:true,
-    description:"Uma equipe de exploradores viaja através de um buraco de minhoca no espaço, na tentativa de garantir a sobrevivência da humanidade.",
-    image:"https://images.bauerhosting.com/legacy/empire-tmdb/films/157336/images/xu9zaAevzQ5nnrsXN6JcahLnG4i.jpg?format=jpg&quality=80&width=960&height=540&ratio=16-9&resize=aspectfill"
-    },
-
-    {name:"Avatar (2009)",
-    rating:"7.9",
-    isFavorited:false,
-    description:"Um militar paraplégico despachado para a lua Pandora em uma missão única fica dividido entre seguir suas ordens e proteger o mundo que ele sente ser sua casa.",
-    image:"https://s2.glbimg.com/T4CRp2Bwz6QyXh-3IfI-XzHjgvk=/e.glbimg.com/og/ed/f/original/2022/08/23/fa27tr6usaaajx1.jpg"
-    },
-
-    {name:"Avengers Endgame (2019)",
-    rating:"8.4",
-    isFavorited:true,
-    description:"Após os eventos devastadores de Vingadores: Guerra Infinita , o universo está em ruínas, e com a ajuda de aliados os Vingadores se reúnem para desfazer as ações de Thanos e restaurar a ordem.",
-    image:"https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg"
-    },
-]
-
-movies.forEach(movie => {
-    renderMovie(movie)
-}); */
