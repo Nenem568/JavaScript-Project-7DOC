@@ -8,24 +8,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles/styles.css"> 
+    <link rel="stylesheet" href="../styles/styles.css"> 
 </head>
 <body>
     <header class="top">
-        <h1 class="page-title">Filmes Populares</h1>
+        <a href="./index.html"><h1 class="page-title">Popular Movies</h1></a>
         <form>
-            <input id="search" class="search" type="search" placeholder="Digite algum filme para pesquisar...">
-            <button type="submit"></button>
+            <div>
+                <input maxlength="100" name="search-movie" id="search" class="search" type="search" placeholder="Search for Movies or TV Shows...">
+                <button id="search-btn" type="submit"></button>
+            </div>
         </form>
-        <label class="container">Mostrar meus filmes favoritos apenas
-            <input type="checkbox">
-            <span class="checkmark"></span>
-        </label>
+        <div class="checkbox-container">
+            <label>Show only my favorite movies
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </div>
     </header>
     <main>
         <section class="movies-list">
         </section>
     </main>
 </body>
-<script src="./script.js" type="module"></script>
+<script src="../js/script.js" type="module"></script>
 </html>

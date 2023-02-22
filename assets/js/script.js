@@ -1,16 +1,51 @@
-import API_KEY from "./api.js";
+import API_KEY from "./api.js"; // Api Key stored in a safe file
 
+// Initiate the site, if there's a search, it searchs for that request
+// If there wans't it show the trending movies
+if (window.location.search) {
+    const searchMovieName = window.location.search.replace("?search-movie=", "")
+    window.onload = gettingMovies(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${searchMovieName}&page=1&include_adult=false`)
+} else {
+    const popularMovies = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`
+    window.onload = gettingMovies(popularMovies);
+}
+
+// Gets the movies array and calls for render function
+async function gettingMovies(link) {
+    try {
+        const fetchResponse = await fetch(link),
+            data = await fetchResponse.json();
+        if (data.results.length === 0) {
+            renderMovie("no movie")
+        } else { 
+            data.results.forEach(movie => {
+                renderMovie(movie)
+        })};
+    } catch (error) {
+        console.log({error});
+    }
+}
+
+// Default variables
 const body = document.body,
     html = document.documentElement,
-    moviesList = document.querySelector(".movies-list")// Selecting the parente list and section which will show every movie
+    moviesList = document.querySelector(".movies-list")// Selecting the parent list and section which will show every movie
 
-function renderMovie(movie, title){
+// Render function to render movies from an array to the site
+function renderMovie(movie){
+    if (movie === "no movie"){
+        const noMovie = document.createElement("h1")
+        noMovie.textContent = "Nothing found"
+        document.querySelector(".movies-list").appendChild(noMovie)
+    }
+
     // Creating the const of each movie property
-    const movieName = document.createTextNode(title),
+    const movieName = document.createTextNode(movie.title),
         moviePoster = "https://image.tmdb.org/t/p/w200" + movie.poster_path,
         movieRating = document.createTextNode(movie.vote_average.toPrecision(2)),
-        movieFavorite = document.createTextNode("Favoritar"),
-        movieDescription = document.createTextNode(movie.overview);
+        movieFavorite = document.createTextNode("Favorite"),
+        movieDescription = document.createTextNode(movie.overview),
+        isFavorited = false;
 
     // Creating the element who is parent to it all
     const movieElement = document.createElement("div");
@@ -47,7 +82,7 @@ function renderMovie(movie, title){
     rating.classList.add("rating");
     ratingFavorite.appendChild(rating);
     const movieRatingIcon = new Image;//Rating icon
-    movieRatingIcon.src = "./icons/Star.svg";
+    movieRatingIcon.src = "../icons/Star.svg";
     movieRatingIcon.alt = "Star icon";
     movieRatingIcon.classList.add("star-icon");
     rating.appendChild(movieRatingIcon);
@@ -63,7 +98,7 @@ function renderMovie(movie, title){
     favoriteAction.href = "#favorite";
     favorite.appendChild(favoriteAction);
     const heartIcon = new Image;//Favorite icon
-    heartIcon.src = "./icons/Heart.svg";
+    heartIcon.src = "../icons/Heart.svg";
     heartIcon.alt = "Heart icon";
     heartIcon.classList.add("heart-icon");
     favoriteAction.appendChild(heartIcon);
@@ -76,29 +111,4 @@ function renderMovie(movie, title){
     movieDescriptionP.classList.add("movie-description");
     movieDescriptionP.appendChild(movieDescription);
     movieElement.appendChild(movieDescriptionP);
-}
-
-window.onload = async function gettingMovies() {
-    try {
-        const fetchResponse = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`),
-            data = await fetchResponse.json();
-
-        data.results.forEach(movie => {
-            const name = movie.name,
-                originalName = movie.original_name,
-                title = movie.title,
-                movieFinalTitle = (name, originalName, title) => {
-                if (name){
-                    return name
-                }else if(originalName){
-                    return originalName
-                }else if(title){
-                    return title
-                }
-            }
-            renderMovie(movie, movieFinalTitle(name, originalName, title))
-        });
-    } catch (error) {
-        console.log({error});
-    }
 }

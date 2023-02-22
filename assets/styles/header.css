@@ -8,11 +8,12 @@ header{
 }
 .page-title{
     font-weight: lighter;
-    text-align: center;
+    width:fit-content;
+    margin:auto;
     padding:1em;
     color:var(--text-color);
 }
-form {
+form div{
     display: flex;
     justify-content:center;
     border-radius: 5px;

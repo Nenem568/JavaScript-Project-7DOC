@@ -16,6 +16,7 @@
     --first-color:#1D1C3B;
     --second-color:#45454d;
     --movie-description-color:#ACACAC;
+    --no-movie-font-size:3rem;
 }
 html{
     scroll-behavior:smooth;
