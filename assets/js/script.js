@@ -1,7 +1,7 @@
 import API_KEY from "./api.js"; // Api Key stored in a safe file
 
 // Initiate the site, if there's a search, it searchs for that request
-// If there wans't it show the trending movies
+// If there wans't, it show the trending movies
 if (window.location.search) {
     const searchMovieName = window.location.search.replace("?search-movie=", "")
     window.onload = gettingMovies(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${searchMovieName}&page=1&include_adult=false`)
@@ -26,13 +26,47 @@ async function gettingMovies(link) {
     }
 }
 
+// If the movie isn't in the local storage, adds it to the array and sets to the local storage :if
+// if it already is, it deletes it :else
+// :favoriteMovies - localStorage key
+function saveToLocalStorage(movie){
+    const movies = getFavoriteMovies()
+    if (movies.indexOf(movie) === -1 || undefined){
+        movies.push(movie)
+        localStorage.setItem("favoriteMovies", JSON.stringify(movies))
+    }else{
+        const movieIndex = movies.indexOf(movie)
+        movies.splice(movieIndex, 1)
+        localStorage.setItem("favoriteMovies", JSON.stringify(movies))
+    }
+}
+// Gets the localStorage key or creates it when there isn't one
+function getFavoriteMovies(){
+    if(!localStorage.getItem("favoriteMovies")){
+        localStorage.setItem("favoriteMovies", JSON.stringify([]))
+        return localStorage.getItem("favoriteMovies")
+    } else{
+        return JSON.parse(localStorage.getItem("favoriteMovies"))
+}}
+// Checks if the movie is favorited on refresh and returns its value
+function checkFavorite(movie){
+    const movies = getFavoriteMovies()
+    if (movies.indexOf(movie) === -1){
+        return false
+    }else{
+        return true
+    }
+}
+
 // Default variables
 const body = document.body,
     html = document.documentElement,
-    moviesList = document.querySelector(".movies-list")// Selecting the parent list and section which will show every movie
+    moviesList = document.querySelector(".movies-list");// Selecting the parent section which will show every movie
+
 
 // Render function to render movies from an array to the site
 function renderMovie(movie){
+    // If search API gives out no result, it prints "Nothing Found"
     if (movie === "no movie"){
         const noMovie = document.createElement("h1")
         noMovie.textContent = "Nothing found"
@@ -41,12 +75,21 @@ function renderMovie(movie){
 
     // Creating the const of each movie property
     const movieName = document.createTextNode(movie.title),
-        moviePoster = "https://image.tmdb.org/t/p/w200" + movie.poster_path,
         movieRating = document.createTextNode(movie.vote_average.toPrecision(2)),
-        movieFavorite = document.createTextNode("Favorite"),
+        movieFavorite = document.createTextNode("Favorite");
+    let moviePoster = "https://image.tmdb.org/t/p/w200" + movie.poster_path,
         movieDescription = document.createTextNode(movie.overview),
         isFavorited = false;
 
+    // If it hasn't a poster
+    // If it hasn't a description
+    if (movie.poster_path == null) {
+        moviePoster = "../icons/nocontentfound.png"
+    }
+    if (movie.overview === ""){
+        movieDescription = document.createTextNode("THIS CONTENT HAS NO DESCRIPTION."
+    )}
+    
     // Creating the element who is parent to it all
     const movieElement = document.createElement("div");
     movieElement.classList.add("movie-container");
@@ -95,16 +138,35 @@ function renderMovie(movie){
     favorite.classList.add("favorite");
     ratingFavorite.appendChild(favorite);
     const favoriteAction = document.createElement("a");//Making movie favorite Action
-    favoriteAction.href = "#favorite";
+    favoriteAction.name = "favoriteOption";
     favorite.appendChild(favoriteAction);
     const heartIcon = new Image;//Favorite icon
-    heartIcon.src = "../icons/Heart.svg";
+    // If it's already in the favoriteMovies array, give it the
+    // filled Heart icon, if it isn't, gives it the normal one 
+    if (!checkFavorite(movie.title)){
+        heartIcon.src = "../icons/Heart.svg"
+        isFavorited = false
+    } else {
+        heartIcon.src = "../icons/FilledHeart.svg";
+        isFavorited = true;
+    }
     heartIcon.alt = "Heart icon";
     heartIcon.classList.add("heart-icon");
     favoriteAction.appendChild(heartIcon);
     const favoriteSpan = document.createElement("span");//Favorite Span "Favoritar"
     favoriteSpan.appendChild(movieFavorite);
     favoriteAction.appendChild(favoriteSpan);
+    // Making movie favorite or unfavorite with click Event Listener
+    favoriteAction.addEventListener("click", () => {
+        if (isFavorited){
+            heartIcon.src = "../icons/Heart.svg"
+            isFavorited = false
+            saveToLocalStorage(movie.title)// Removing it from the favorite array
+        } else {
+            heartIcon.src = "../icons/FilledHeart.svg"
+            isFavorited = true
+            saveToLocalStorage(movie.title)// Adding it to the favorite array
+    }})
 
     // Creating and giving the movie it's respective description
     const movieDescriptionP = document.createElement("span");
