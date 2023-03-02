@@ -11,6 +11,7 @@
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
 }
+
 :root{
     --text-color:white;
     --first-color:#1D1C3B;
@@ -18,9 +19,19 @@
     --movie-description-color:#ACACAC;
     --no-movie-font-size:3rem;
 }
+
 html{
     scroll-behavior:smooth;
 }
+html::-webkit-scrollbar{
+    background:var(--first-color);
+    width:10px;
+}
+html::-webkit-scrollbar-thumb{
+    background:var(--second-color);
+    border-radius: 8px;
+}
+
 body{
     font-size: 100%;
     list-style-type: none;
