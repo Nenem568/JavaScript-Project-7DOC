@@ -1,6 +1,4 @@
 import API_KEY from "./api.js"; // Api Key stored in a safe file
-// import { renderMovie } from "./renderMovie.js";
-// import { saveToLocalStorage, getFavoriteMovies, checkFavorite, checkboxListener } from "./localStorage.js";
 import { gettingMovies } from "./apiWork.js"; //getSingleMovie
 
 window.onload = hasSearched()

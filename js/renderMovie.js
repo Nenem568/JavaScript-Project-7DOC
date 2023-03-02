@@ -23,7 +23,7 @@ import { moviesList } from "./script.js";
         // If it hasn't a poster
         // If it hasn't a description
         if (movie.poster_path == null) {
-            moviePoster = "../icons/nocontentfound.png"
+            moviePoster = "./img/nocontentfound.png"
         }
         if (movie.overview === ""){
             movieDescription = document.createTextNode("THIS CONTENT HAS NO DESCRIPTION."
@@ -64,7 +64,7 @@ import { moviesList } from "./script.js";
         rating.classList.add("rating");
         ratingFavorite.appendChild(rating);
         const movieRatingIcon = new Image;//Rating icon
-        movieRatingIcon.src = "../icons/Star.svg";
+        movieRatingIcon.src = "./img/Star.svg";
         movieRatingIcon.alt = "Star icon";
         movieRatingIcon.classList.add("star-icon");
         rating.appendChild(movieRatingIcon);
@@ -83,10 +83,10 @@ import { moviesList } from "./script.js";
         // If it's already in the favoriteMovies array, give it the
         // filled Heart icon, if it isn't, gives it the normal one 
         if (!checkFavorite(movieId)){
-            heartIcon.src = "../icons/Heart.svg"
+            heartIcon.src = "./img/Heart.svg"
             isFavorited = false
         } else {
-            heartIcon.src = "../icons/FilledHeart.svg";
+            heartIcon.src = "./img/FilledHeart.svg";
             isFavorited = true;
         }
         heartIcon.alt = "Heart icon";
@@ -98,11 +98,11 @@ import { moviesList } from "./script.js";
         // Making movie favorite or unfavorite (using its ID) with click Event Listener
         favoriteAction.addEventListener("click", () => {
             if (isFavorited){
-                heartIcon.src = "../icons/Heart.svg"
+                heartIcon.src = "./img/Heart.svg"
                 isFavorited = false
                 saveToLocalStorage(movieId)// Removing it from the favorite array
             } else {
-                heartIcon.src = "../icons/FilledHeart.svg"
+                heartIcon.src = "./img/FilledHeart.svg"
                 isFavorited = true
                 saveToLocalStorage(movieId)// Adding it to the favorite array
         }})
